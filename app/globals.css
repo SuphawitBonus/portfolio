@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+/* Warm paper, deep ink, one burnt-orange accent. Every text pair below passes WCAG AA. */
+:root {
+  --paper: #f4f1ea;
+  --surface: #fbfaf6;
+  --ink: #17181c;
+  --muted: #565a63;
+  --line: #dcd7cc;
+  --accent: #a83f17;
+  --accent-ink: #ffffff;
+  --shot-border: #cfc9bc;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #121316;
+    --surface: #1a1c20;
+    --ink: #ecebe6;
+    --muted: #a5a8b0;
+    --line: #2b2e34;
+    --accent: #f08a5d;
+    --accent-ink: #17181c;
+    --shot-border: #33363d;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-shot: var(--shot-border);
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument), Georgia, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
