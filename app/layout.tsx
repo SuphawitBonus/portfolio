@@ -27,10 +27,14 @@ export const viewport: Viewport = {
 // If the client bundle never runs (MotionObserver sets __motionReady), it turns them off again so nothing stays hidden.
 const motionScript = `(function(){try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;var d=document.documentElement;d.classList.add('motion');setTimeout(function(){if(!window.__motionReady)d.classList.remove('motion')},4000)}catch(e){}})();`;
 
+// Applies a theme the visitor picked earlier (ThemeToggle saves it) before first paint, so there is no flash.
+const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}})();`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${sans.variable} ${mono.variable} antialiased`} suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script dangerouslySetInnerHTML={{ __html: motionScript }} />
       </head>
       <body className="min-h-screen font-sans text-[16px] leading-relaxed">

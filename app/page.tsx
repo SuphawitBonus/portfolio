@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { CountUp } from "@/components/Motion";
 import { FlipMetric, ProjectMedia, ProjectTabs } from "@/components/ProjectBits";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { moreWork, profile, projects, skills, type Link, type Project } from "@/lib/content";
 
 /* ---------- small building blocks ---------- */
@@ -206,17 +207,20 @@ export default function Home() {
         <a href="#top" className="text-sm font-bold tracking-tight">
           suphawit<span className="text-accent">.</span>
         </a>
-        <nav aria-label="Sections" className="flex gap-1 text-sm font-medium">
-          {[
-            ["#work", "Work"],
-            ["#skills", "Skills"],
-            ["#contact", "Contact"],
-          ].map(([href, label]) => (
-            <a key={href} href={href} className="rounded-full px-3.5 py-1.5 transition-colors hover:bg-chip">
-              {label}
-            </a>
-          ))}
-        </nav>
+        <div className="flex items-center gap-1">
+          <nav aria-label="Sections" className="flex gap-1 text-sm font-medium">
+            {[
+              ["#work", "Work"],
+              ["#skills", "Skills"],
+              ["#contact", "Contact"],
+            ].map(([href, label]) => (
+              <a key={href} href={href} className="rounded-full px-3 py-1.5 transition-colors hover:bg-chip sm:px-3.5">
+                {label}
+              </a>
+            ))}
+          </nav>
+          <ThemeToggle />
+        </div>
       </header>
 
       <main id="top" className="mx-auto max-w-6xl px-4 sm:px-8">
