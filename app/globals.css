@@ -1,41 +1,52 @@
 @import "tailwindcss";
 
-/* Warm paper, deep ink, one burnt-orange accent. Every text pair below passes WCAG AA. */
+/* Sky-blue canvas, frosted white cards, navy ink, one blue accent. Text pairs pass WCAG AA on the card colour. */
 :root {
-  --paper: #f4f1ea;
-  --surface: #fbfaf6;
-  --ink: #17181c;
-  --muted: #565a63;
-  --line: #dcd7cc;
-  --accent: #a83f17;
+  --sky-1: #eef4fc;
+  --sky-2: #d9e6f8;
+  --sky-glow: #cddff7;
+  --card: rgba(255, 255, 255, 0.78);
+  --card-solid: #ffffff;
+  --card-line: rgba(255, 255, 255, 0.9);
+  --ink: #0e1a3a;
+  --muted: #4b5876;
+  --accent: #1d47c8;
+  --accent-2: #5b8def;
   --accent-ink: #ffffff;
-  --shot-border: #cfc9bc;
+  --chip: #e8effb;
+  --track: #dde7f6;
+  --shadow: 0 1px 2px rgba(14, 26, 58, 0.04), 0 10px 30px -12px rgba(29, 71, 200, 0.18);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #121316;
-    --surface: #1a1c20;
-    --ink: #ecebe6;
-    --muted: #a5a8b0;
-    --line: #2b2e34;
-    --accent: #f08a5d;
-    --accent-ink: #17181c;
-    --shot-border: #33363d;
+    --sky-1: #0a1124;
+    --sky-2: #0d1830;
+    --sky-glow: #16306a;
+    --card: rgba(255, 255, 255, 0.055);
+    --card-solid: #121c33;
+    --card-line: rgba(255, 255, 255, 0.09);
+    --ink: #e8eefb;
+    --muted: #9fb0cf;
+    --accent: #8fb2ff;
+    --accent-2: #4f7fe6;
+    --accent-ink: #0a1124;
+    --chip: rgba(255, 255, 255, 0.07);
+    --track: rgba(255, 255, 255, 0.1);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 30px -14px rgba(0, 0, 0, 0.6);
   }
 }
 
 @theme inline {
-  --color-paper: var(--paper);
-  --color-surface: var(--surface);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
-  --color-line: var(--line);
   --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
   --color-accent-ink: var(--accent-ink);
-  --color-shot: var(--shot-border);
-  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-instrument), Georgia, serif;
+  --color-chip: var(--chip);
+  --color-track: var(--track);
+  --color-card-solid: var(--card-solid);
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 }
 
@@ -44,8 +55,120 @@ html {
 }
 
 body {
-  background: var(--paper);
   color: var(--ink);
+  background-color: var(--sky-1);
+  background-image:
+    radial-gradient(60rem 40rem at 85% -10%, var(--sky-glow), transparent 60%),
+    radial-gradient(50rem 36rem at -10% 30%, var(--sky-2), transparent 60%),
+    linear-gradient(180deg, var(--sky-1), var(--sky-2));
+  background-attachment: fixed;
+}
+
+/* Frosted card used everywhere. */
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+/* ---------- motion ----------
+   Everything below only runs while <html class="motion"> is set (see layout.tsx), so reduced-motion users
+   and no-JS visitors get the static page. Entrance animations use the individual `translate`/`scale`
+   properties so they never fight the `transform` used by hover effects. */
+:root {
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@keyframes rise {
+  from { opacity: 0; translate: 0 28px; scale: 0.985; }
+  to { opacity: 1; translate: 0 0; scale: 1; }
+}
+@keyframes line-up {
+  from { translate: 0 105%; }
+  to { translate: 0 0; }
+}
+@keyframes fade-down {
+  from { opacity: 0; translate: 0 -12px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes settle {
+  from { transform: scale(1.08); }
+  to { transform: scale(1); }
+}
+@keyframes draw {
+  from { stroke-dashoffset: var(--c); }
+}
+@keyframes drift {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+@keyframes spin {
+  to { rotate: 360deg; }
+}
+
+html.motion .reveal { opacity: 0; }
+html.motion .reveal.in { animation: rise 0.8s var(--ease-out) var(--d, 0ms) both; }
+
+html.motion .site-header { animation: fade-down 0.7s var(--ease-out) both; }
+
+/* hero name: each line slides up out of a mask */
+.line { display: block; overflow: hidden; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+.line > span { display: inline-block; }
+html.motion .line > span { animation: line-up 1s var(--ease-out) var(--d, 0ms) both; }
+
+/* slow gradient drift on accent text and the contact card */
+.drift { background-size: 200% 100%; }
+html.motion .drift { animation: drift 7s ease-in-out infinite alternate; }
+
+/* screenshot eases into place once its card is revealed */
+html.motion .reveal:not(.in) .shot-img { transform: scale(1.08); }
+html.motion .reveal.in .shot-img { animation: settle 1.6s var(--ease-out) var(--d, 0ms) both; }
+
+/* ring gauges draw from zero */
+html.motion .reveal:not(.in) .ring-arc { stroke-dashoffset: var(--c); }
+html.motion .reveal.in .ring-arc { animation: draw 1.4s var(--ease-out) calc(var(--d, 0ms) + 150ms) both; }
+
+/* orbit around the Y2 badge */
+html.motion .orbit { animation: spin 14s linear infinite; }
+
+/* hover: cards lift, link arrows nudge */
+.card { transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out); }
+.card.lift:hover { transform: translateY(-4px); box-shadow: 0 2px 4px rgba(14, 26, 58, 0.05), 0 18px 40px -14px rgba(29, 71, 200, 0.28); }
+.nudge { display: inline-block; transition: transform 0.25s var(--ease-out); }
+a:hover > .nudge { transform: translate(2px, -2px); }
+a:hover > .nudge-down { transform: translateY(2px); }
+
+/* metric cards flip to show how the number was measured */
+/* The visible face sets the card's size; the hidden one is laid over it, so a long "how" text never
+   stretches the card (or the page) until it is actually shown. */
+.flip { position: relative; height: 100%; min-width: 0; }
+.face {
+  min-width: 0;
+  height: 100%;
+  overflow-wrap: anywhere;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: transform 0.65s var(--ease-out);
+}
+.face-back { position: absolute; inset: 0; transform: perspective(900px) rotateY(180deg); }
+.flip[data-flipped="true"] .face-back { position: relative; transform: perspective(900px) rotateY(0deg); }
+.flip[data-flipped="true"] .face-front { position: absolute; inset: 0; transform: perspective(900px) rotateY(-180deg); }
+
+/* mobile "What I built" disclosure */
+.built-summary { list-style: none; cursor: pointer; }
+.built-summary::-webkit-details-marker { display: none; }
+details[open] .built-chevron { rotate: 180deg; }
+.built-chevron { transition: rotate 0.25s var(--ease-out); }
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .nudge, .face, .built-chevron { transition: none; }
+  .card.lift:hover { transform: none; }
+  /* swap faces instead of rotating */
+  .face-back, .flip[data-flipped="true"] .face-front { transform: none; visibility: hidden; }
+  .flip[data-flipped="true"] .face-back { visibility: visible; }
 }
 
 ::selection {
@@ -56,7 +179,7 @@ body {
 a:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 2px;
+  border-radius: 6px;
 }
 
 @media (prefers-reduced-motion: reduce) {
